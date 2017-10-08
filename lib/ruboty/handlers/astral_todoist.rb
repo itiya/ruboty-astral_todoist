@@ -4,7 +4,7 @@ module Ruboty
   module Handlers
     # Todoist plugin
     class AstralTodoist < Base
-      on /list task/, name: 'list_task', description: 'list task'
+      on /list task\s+(?<project_name>.*)/, name: 'list_task', description: 'list task'
       env :TODOIST_TOKEN, "Todoist account API token"
 
       def list_task(message)
