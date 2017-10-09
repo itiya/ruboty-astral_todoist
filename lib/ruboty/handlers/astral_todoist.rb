@@ -1,14 +1,14 @@
-require "ruboty/astral_todoist/actions/list_task"
+require "ruboty/astral_todoist/actions/todoist_tasks"
 
 module Ruboty
   module Handlers
     # Todoist plugin
     class AstralTodoist < Base
-      on /list task\s+(?<project_name>.*)/, name: 'list_task', description: 'list task'
+      on /todoist tasks\s+(?<project_name>.*)/, name: 'todoist_tasks', description: 'list tasks'
       env :TODOIST_TOKEN, "Todoist account API token"
 
-      def list_task(message)
-        Ruboty::AstralTodoist::Actions::List_task.new(message).call
+      def todoist_tasks(message)
+        Ruboty::AstralTodoist::Actions::TodoistTasks.new(message).call
       end
 
     end
