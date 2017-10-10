@@ -4,6 +4,8 @@ module Ruboty
     class InvalidDateError < StandardError; end
 
     class Items
+      attr_reader :items
+
       @@client = Todoist::Client.create_client_by_token("#{ENV['TODOIST_TOKEN']}")
 
       def initialize(items = nil)
