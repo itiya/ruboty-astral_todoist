@@ -1,23 +1,24 @@
+require 'todoist'
+
 module Ruboty
-  module Todoist
+  module TodoistResource
     class ProjectNotFoundError < StandardError; end
     class InvalidDateError < StandardError; end
 
     class Items
       attr_reader :items
 
-      @@client = Todoist::Client.create_client_by_token("#{ENV['TODOIST_TOKEN']}")
-
       def initialize(items = nil)
         if items == nil
-          @items = @@client.sync_items.collection.values
+          @client = Todoist::Client.create_client_by_token("#{ENV['TODOIST_TOKEN']}")
+          @items = @client.sync_items.collection.values
         else
           @items = items
         end
       end
 
       def filter_by_project(project_name)
-        project = @@client.sync_projects.collection.values.select {|item| item.name == project_name}.first
+        project = @client.sync_projects.collection.values.select {|item| item.name == project_name}.first
         if project == nil
           raise ProjectNotFoundError
         end
