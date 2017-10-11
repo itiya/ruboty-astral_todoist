@@ -5,7 +5,7 @@ require "ruboty/todoist_resource/items"
 module Ruboty
   module AstralTodoist
     module Actions
-      class TodoistTasks < Ruboty::Actions::Base
+      class TodoistTasksFirst < Ruboty::Actions::Base
         @@lines = {
             :project_not_found => "Project not found",
             :invalid_date => "Invalid date"
@@ -25,11 +25,11 @@ module Ruboty
 
           items = Ruboty::TodoistResource::Items.new(nil)
           begin
-            contents = items.filter_by_project(project_name).filter_by_due_date(specified_date).sort_by_due_date.items.map{|item| item.content}
-            if contents.length == 0
+            first_content = items.filter_by_project(project_name).filter_by_due_date(specified_date).sort_by_due_date.items.map{|item| item.content}.first
+            if first_content == nil
               "All task completed"
             else
-              contents
+              first_content
             end
           rescue Ruboty::TodoistResource::ProjectNotFoundError
             @@lines[:project_not_found]
