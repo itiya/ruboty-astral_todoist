@@ -1,6 +1,5 @@
-require 'todoist'
-require 'time'
 require "ruboty/todoist_resource/items"
+require "ruboty/todoist_resource/client"
 
 module Ruboty
   module AstralTodoist
@@ -11,7 +10,6 @@ module Ruboty
             :invalid_date => "Invalid date",
             :invalid_sort_type => "Invalid sort type"
         }
-        @@client = Todoist::Client.create_client_by_token("#{ENV['TODOIST_TOKEN']}")
 
         def call
           message.reply(todoist_tasks_complete_first(message))
@@ -31,8 +29,9 @@ module Ruboty
             if first_content == nil
               "All task completed"
             else
-              @@client.sync_items.complete([first_content])
-              @@client.sync
+              client = Ruboty::TodoistResource::Client.instance.client
+              client.sync_items.complete([first_content])
+              client.sync
               "complete #{first_content.content}"
             end
           rescue Ruboty::TodoistResource::ProjectNotFoundError

@@ -1,5 +1,3 @@
-require 'todoist'
-require 'time'
 require "ruboty/todoist_resource/items"
 
 module Ruboty
@@ -11,7 +9,6 @@ module Ruboty
             :invalid_date => "Invalid date",
             :invalid_sort_type => "Invalid sort type"
         }
-        @@client = Todoist::Client.create_client_by_token("#{ENV['TODOIST_TOKEN']}")
 
         def call
           message.reply(todoist_tasks(message))

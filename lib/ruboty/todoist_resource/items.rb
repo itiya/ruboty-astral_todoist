@@ -1,4 +1,5 @@
-require 'todoist'
+require 'time'
+require "ruboty/todoist_resource/client"
 
 module Ruboty
   module TodoistResource
@@ -11,7 +12,7 @@ module Ruboty
 
       def initialize(items = nil)
         if items == nil
-          @client = Todoist::Client.create_client_by_token("#{ENV['TODOIST_TOKEN']}")
+          @client = Client.instance.client
           @items = @client.sync_items.collection.values
         else
           @items = items
