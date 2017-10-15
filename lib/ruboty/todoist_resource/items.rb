@@ -4,6 +4,7 @@ module Ruboty
   module TodoistResource
     class ProjectNotFoundError < StandardError; end
     class InvalidDateError < StandardError; end
+    class InvalidSortTypeError < StandardError; end
 
     class Items
       attr_reader :items
@@ -52,12 +53,22 @@ module Ruboty
         Items.new(items)
       end
 
-      def sort_by_due_date
-        items = @items.sort do |a, b|
-          # noinspection RubyResolve
-          todoist_date_to_datetime(a.due_date_utc) <=> todoist_date_to_datetime(b.due_date_utc)
+      def sort(sort_type)
+        if sort_type == "due_date"
+          items = @items.sort do |a, b|
+            # noinspection RubyResolve
+            todoist_date_to_datetime(a.due_date_utc) <=> todoist_date_to_datetime(b.due_date_utc)
+          end
+          Items.new(items)
+        elsif sort_type == "name"
+          items = @items.sort do |a, b|
+            # noinspection RubyResolve
+            a.content <=> b.content
+          end
+          Items.new(items)
+        else
+          raise InvalidSortTypeError
         end
-        Items.new(items)
       end
 
       private
