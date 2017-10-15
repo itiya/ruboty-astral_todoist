@@ -28,6 +28,7 @@ module Ruboty
               client = Ruboty::TodoistResource::Client.instance.client
               client.sync_items.complete([first_content])
               client.sync
+              Ruboty::TodoistResource::Client.instance.reload
               response = response(:complete_task)
               response.gsub(/<task_name>/, "\"#{first_content.content}\"")
             end
