@@ -1,15 +1,11 @@
 require "ruboty/todoist_resource/items"
 require "ruboty/todoist_resource/client"
+require "ruboty/astral_todoist/common/response"
 
 module Ruboty
   module AstralTodoist
     module Actions
       class TodoistTasksCompleteFirst < Ruboty::Actions::Base
-        @@lines = {
-            :project_not_found => "Project not found",
-            :invalid_date => "Invalid date",
-            :invalid_sort_type => "Invalid sort type"
-        }
 
         def call
           message.reply(todoist_tasks_complete_first(message))
@@ -27,20 +23,25 @@ module Ruboty
           begin
             first_content = items.filter_by_project(project_name).filter_by_due_date(specified_date).sort(sort_type).items.first
             if first_content == nil
-              "All task completed"
+              response(:all_tasks_completed)
             else
               client = Ruboty::TodoistResource::Client.instance.client
               client.sync_items.complete([first_content])
               client.sync
-              "complete #{first_content.content}"
+              response = response(:complete_task)
+              response.gsub(/<task_name>/, "\"#{first_content.content}\"")
             end
           rescue Ruboty::TodoistResource::ProjectNotFoundError
-            @@lines[:project_not_found]
+            response(:project_not_found)
           rescue Ruboty::TodoistResource::InvalidDateError
-            @@lines[:invalid_date]
+            response(:invalid_date)
           rescue Ruboty::TodoistResource::InvalidSortTypeError
-            @@lines[:invalid_sort_type]
+            response(:invalid_sort_type)
           end
+        end
+
+        def response(event_symbol)
+          Ruboty::AstralTodoist::Common::Response.instance.lines[event_symbol]
         end
 
       end
