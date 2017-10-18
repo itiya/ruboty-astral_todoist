@@ -64,7 +64,7 @@ module Ruboty
         elsif sort_type == "name"
           items = @items.sort do |a, b|
             # noinspection RubyResolve
-            a.content <=> b.content
+            parse_content_and_link(a.content)[:content] <=> parse_content_and_link(b.content)[:content]
           end
           Items.new(items)
         else
@@ -76,6 +76,15 @@ module Ruboty
 
       def todoist_date_to_datetime(todoist_date)
         Time.rfc2822(todoist_date.clone.insert(3, ',')).getlocal
+      end
+
+      def parse_content_and_link(plane_content)
+        match_data = /(?<url>.*)\s\((?<content>.*)\)/.match(plane_content)
+        if match_data == nil
+          {:link => nil, :content => plane_content}
+        else
+          {:link => match_data.named_captures["link"], :content => match_data.named_captures["content"]}
+        end
       end
 
     end
