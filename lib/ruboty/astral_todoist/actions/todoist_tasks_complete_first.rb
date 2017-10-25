@@ -26,7 +26,7 @@ module Ruboty
               response(:all_tasks_completed)
             else
               client = Ruboty::TodoistResource::Client.instance.client
-              client.sync_items.complete([first_content])
+              client.sync_items.close(first_content)
               client.sync
               Ruboty::TodoistResource::Client.instance.reload
               response = response(:complete_task)
